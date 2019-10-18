@@ -1,11 +1,19 @@
 # Bitwise Extensions
+
+![](https://github.com/iarovyi/BitwiseExtensions/workflows/Run%20CI/badge.svg)
+
 Educational bitwise extentions for fun only. Not suitable for production
 
 ## Prerequisites
-Build requires only docker with linux containers and development requires only Visual Studio 2019.
+Building a package requires only docker for linux:
 ```
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 choco install -y docker-desktop
+```
+
+Code development requires only VisualStudio 2019:
+```
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 choco install -y visualstudio2019community
 ```
 ## Build
