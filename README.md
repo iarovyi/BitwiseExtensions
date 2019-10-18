@@ -1,0 +1,2 @@
+# BitwiseExtensions
+Educational bitwise extentions
