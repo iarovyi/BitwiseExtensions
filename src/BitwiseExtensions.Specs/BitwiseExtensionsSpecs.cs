@@ -8,7 +8,6 @@ namespace BitwiseExtensions.Specs
         [Fact]
         public void Should_see_that_bit_is_not_set()
         {
-            true.Should().BeFalse();
             0b00.IsBitSet(1).Should().BeFalse();
         }
 
