@@ -4,7 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
 WORKDIR /sources
 COPY . .
-RUN dotnet run --project ./build/build.csproj -- --mount-dir=/repository 
+RUN dotnet run --project ./build/_build.csproj -- --ArtifactsDir ../repository/.artifacts
 
 FROM base AS final
 WORKDIR /app

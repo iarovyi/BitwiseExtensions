@@ -1,37 +1,100 @@
-﻿namespace build_script
+using System;
+using System.IO;
+using System.Linq;
+using Microsoft.Build.Tasks;
+using Nuke.Common;
+using Nuke.Common.Execution;
+using Nuke.Common.Git;
+using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
+using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Tools.NuGet;
+using Nuke.Common.Utilities.Collections;
+using static Nuke.Common.EnvironmentInfo;
+using static Nuke.Common.IO.FileSystemTasks;
+using static Nuke.Common.IO.PathConstruction;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using static Nuke.Common.Tools.NuGet.NuGetTasks;
+
+[CheckBuildProjectConfigurations]
+[UnsetVisualStudioEnvironmentVariables]
+class Build : NukeBuild
 {
-    using System;
-    using System.CommandLine;
-    using static Bullseye.Targets;
-    using static SimpleExec.Command;
+    public static int Main () => Execute<Build>(x => x.Publish);
 
-    class Program
-    {
-        private const string ProjectDir = "./src";
-        static void Main(string[] args)
+    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
+    readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+
+    [Parameter("Path to artifacts directory")]
+    readonly string ArtifactsDir = "./.artifacts";
+
+    [Solution] readonly Solution Solution;
+    [GitRepository] readonly GitRepository GitRepository;
+    //[GitVersion] readonly GitVersion GitVersion;
+
+    AbsolutePath SourceDirectory => RootDirectory / "src";
+    AbsolutePath ArtifactsDirectory => (AbsolutePath)Path.GetFullPath(ArtifactsDir);
+    AbsolutePath PublishProjectDirectory => SourceDirectory 
+                                            / "BitwiseExtensions.DemoConsole/BitwiseExtensions.DemoConsole.csproj";
+
+    Target Clean => _ => _
+        .Executes(() =>
         {
-            var arguments = ParseArgs(args,
-                new Option("--artifacts-dir", "Directory for generated artifacts") { Argument = new Argument<string>("artifacts-dir") });
-            var artifactsDir = arguments.ValueForOption<string>("--artifacts-dir");
+            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
+            EnsureCleanDirectory(ArtifactsDirectory);
+        });
 
-            Target("clean",                         () => Run("rm", $"-rf {artifactsDir}"));
-            Target("restore", DependsOn("clean"),   () => Run("dotnet", $"restore {ProjectDir}"));
-            Target("build",   DependsOn("restore"), () => Run("dotnet", $"build -c Release -o /app/build {ProjectDir}"));
-            Target("test",    DependsOn("build"),   () => Run("dotnet", $"test {ProjectDir}"));
-            Target("publish", DependsOn("test"),    () => Run("dotnet", $"publish {ProjectDir} -c Release -o {artifactsDir}"));
-            Target("default", DependsOn("publish"));
-
-            RunTargetsAndExit(arguments.UnmatchedTokens);
-        }
-
-        private static ParseResult ParseArgs(string[] args, params Option[] options)
+    Target Restore => _ => _
+        .DependsOn(Clean)
+        .Executes(() =>
         {
-            var cmd = new RootCommand { TreatUnmatchedTokensAsErrors = false };
-            foreach (var option in options)
-            {
-                cmd.Add(option);
-            }
-            return cmd.Parse(args);
-        }
-    }
+            DotNetRestore(s => s
+                .SetProjectFile(Solution));
+        });
+
+    Target Compile => _ => _
+        .DependsOn(Restore)
+        .Executes(() =>
+        {
+            DotNetBuild(s => s
+                .SetProjectFile(Solution)
+                .SetConfiguration(Configuration)
+                /*/.SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
+                .SetFileVersion(GitVersion.GetNormalizedFileVersion())
+                .SetInformationalVersion(GitVersion.InformationalVersion)*/
+                .EnableNoRestore());
+        });
+
+    Target Test => _ => _
+        .DependsOn(Compile)
+        .Executes(() =>
+        {
+            DotNetTest(o => o
+                .SetProjectFile(Solution));
+        });
+
+    Target Pack => _ => _
+        .DependsOn(Test)
+        .Executes(() =>
+        {
+            DotNetPack(s => s
+                .SetProject(Solution)
+                .EnableNoBuild()
+                .SetConfiguration(Configuration)
+                .EnableIncludeSymbols()
+                .SetOutputDirectory(ArtifactsDirectory)
+                /*.SetVersion(GitVersion.NuGetVersionV2)*/);
+        });
+
+    Target Publish => _ => _
+        .DependsOn(Pack)
+        .Executes(() =>
+        {
+            DotNetPublish(s => s
+                .SetNoBuild(true)
+                .SetOutput(ArtifactsDirectory)
+                .SetProject(PublishProjectDirectory)
+                .SetConfiguration(Configuration));
+        });
 }

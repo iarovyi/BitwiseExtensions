@@ -12,5 +12,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: Test and Publish
       run: |
-        chmod a+x build.sh
-        ./build.sh
+        chmod a+x build_in_container.sh
+        ./build_in_container.sh
