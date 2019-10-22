@@ -8,7 +8,7 @@ Educational bitwise extentions for fun only. Not suitable for production
 ## Prerequisites
 DotNetCore is required for building and visual studio for development
 ```
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')) 
 choco install -y docker-desktop
 choco install dotnetcore-sdk --version=2.2.0
 choco install dotnetcore-sdk
