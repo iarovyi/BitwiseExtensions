@@ -1,6 +1,6 @@
 name: Run CI
 
-on: [push,pull_request]
+on: [pushX,pull_requestX]
 
 jobs:
 

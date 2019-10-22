@@ -1,0 +1,28 @@
+name: Release
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - none
+jobs:
+  run:
+    name: Run
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-16.04, windows-latest]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Test and Publish on Linux
+      if: runner.os == 'Linux'
+      run: |
+        chmod a+x build_in_container.sh
+        ./build_in_container.sh
+
+    - name: Test and Publish on Windows
+      if: runner.os == 'Windows'
+      run: |
+        dotnet run -p ./build/_build.csproj
