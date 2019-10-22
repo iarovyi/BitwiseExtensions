@@ -1,8 +1,6 @@
 $ErrorActionPreference = "Stop";
 
-docker build --tag dotnet-image-build -f ./Dockerfile .
-docker run --rm -it --name dotnet-image-build-container `
-  --env APP_DLL_NAME="BitwiseExtensions.DemoConsole.dll" `
-  --mount type=bind,source="$($pwd)",target=/repository `
-  dotnet-image-build `
-  dotnet run --project ./build/build.csproj -- --mount-dir=/repository $args
+dotnet build ./src
+docker build --tag dotnet-run-image -f ./src/BitwiseExtensions.DemoConsole/Dockerfile ./src
+docker run --rm -it --name dotnet-run-image-container dotnet-run-image `
+  dotnet BitwiseExtensions.DemoConsole.dll
