@@ -52,5 +52,12 @@ namespace BitwiseExtensions.Specs
         {
             0b10.ToggleBit(1).Should().Be(0b00);
         }
+
+        [Fact]
+        public void Can_reverse_bits()
+        {
+            0b00000000000000000000000000000011.ReverseBits().Should()
+                .Be(unchecked((int) 0b11000000000000000000000000000000));
+        }
     }
 }

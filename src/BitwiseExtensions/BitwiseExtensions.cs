@@ -17,6 +17,27 @@
         public static bool IsOdd(this int number)               => (number & 1) == 1;
 
         #region Tricks
+        public static int ReverseBits(this int number)
+        {
+            //Number is constantly is shifted to right and result is shifted to left.
+            //While shifting if numbers bit is set than result bit is also set
+            //Simultaneous shifting in opposite directions provides reversed order.
+            int result = 0;
+
+            for (int i = 0; i < 32; i++)
+            {
+                result <<= 1;             //shift result left
+                if ((number & 1) == 1)    //If (first bit is set) {
+                {                         //
+                    result += 1;          //   set first bit of result
+                }                         //}
+
+                number >>= 1;             //shift number right
+            }
+
+            return result;
+        }
+
         public static int ToggleRightTrailingZeros(this int number) => number | (number - 1);
 
         public static int CountSetBits(this long number)
@@ -106,10 +127,10 @@
         #endregion
         #endregion
 
-        public static string ToBitString(this long number) =>
-            Convert.ToString(number, 2).PadLeft(64, '0');
+        public static string ToBitString(this long number, int minLength = 64) =>
+            Convert.ToString(number, 2).PadLeft(minLength, '0');
 
-        public static string ToBitString(this int number) =>
-            Convert.ToString(number, 2).PadLeft(32, '0');
+        public static string ToBitString(this int number, int minLength = 32) =>
+            Convert.ToString(number, 2).PadLeft(minLength, '0');
     }
 }
