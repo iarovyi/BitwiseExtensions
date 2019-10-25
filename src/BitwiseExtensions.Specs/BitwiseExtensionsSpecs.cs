@@ -2,6 +2,7 @@ namespace BitwiseExtensions.Specs
 {
     using FluentAssertions;
     using Xunit;
+    using static BitwiseExtensions;
 
     public class BitwiseExtensionsSpecs
     {
@@ -58,6 +59,18 @@ namespace BitwiseExtensions.Specs
         {
             0b00000000000000000000000000000011.ReverseBits().Should()
                 .Be(unchecked((int) 0b11000000000000000000000000000000));
+        }
+
+        [Fact]
+        public void Can_swap_numbers()
+        {
+            int a = 77;
+            int b = 88;
+
+            Swap(ref a, ref b);
+
+            a.Should().Be(88);
+            b.Should().Be(77);
         }
     }
 }

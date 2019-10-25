@@ -1,11 +1,13 @@
 ﻿namespace BitwiseExtensions
 {
     using System;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Sources:
     ///  - Hacker's Delight 1st Edition - book about bit hacks
     ///  - https://catonmat.net/low-level-bit-hacks
+    ///  - http://aggregate.org/MAGIC/
     /// </summary>
     public static class BitwiseExtensions
     {
@@ -17,6 +19,20 @@
         public static bool IsOdd(this int number)               => (number & 1) == 1;
 
         #region Tricks
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Swap(ref int x, ref int y) //Swap numbers without using temporary variable
+        {
+            x ^= y; /* x' = (x^y) */
+            y ^= x; /* y' = (y^(x^y)) = x */
+            x ^= y; /* x' = (x^y)^x = y */
+
+            /*Alternative: for cpu that does not support xor operation
+            x += y;     // x' = (x+y)
+            y = x - y;  // y' = (x+y)-y = x
+            x -= y;		// x' = (x+y)-x = y 
+            */
+        }
+
         public static int ReverseBits(this int number)
         {
             //Number is constantly is shifted to right and result is shifted to left.

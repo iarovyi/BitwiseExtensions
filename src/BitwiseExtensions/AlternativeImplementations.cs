@@ -16,7 +16,12 @@
             /*
                https://www.geeksforgeeks.org/add-two-numbers-without-using-arithmetic-operators/
                Algorithm:
+               The basic add operation is an XOR. That deals with every case except the columns with two 1s,
+               because 1+1=10. You can figure out which columns those are with an AND operator.
+               Shift that over (Java <<). Now you can repeat the process: add in the carries, 
+               figure out what the new carries are. Keep going until you reach no more carries.
                We operate on all positions each iteration and not like in math when one place at a time.
+
                while (there is a carry) {
                     find bits that needs to be carried left (&: 1 + 1 = 10. Only when 1 and 1 than it needs to be carried)
                     apply actual addition                   (^: only if one of bits is 1 than at that position 1 will stay)
@@ -66,12 +71,27 @@
         public static int Subtract(this int x, int y)
         {
             //https://www.geeksforgeeks.org/subtract-two-numbers-without-using-arithmetic-operators/
+            /*
+               It turns out that "subtract" is just a special kind of "add" -- specifically, 
+               "subtract" is an "add" of a negative number. So all you have to do is figure out
+               how to make the negative of a number using bitwise operators and "subtract" is done.
+             */
+            while (y != 0)
+            {
+                int borrow = (~x) & y; //~ is the only difference comparing to addition
+                x = x ^ y;
+                y = borrow << 1;
+            }
+
+            return x;
+
+            /*Recursive version:
             if (y == 0)
             {
                 return x;
             }
 
-            return Subtract(x ^ y, (~x & y) << 1);
+            return Subtract(x ^ y, (~x & y) << 1);*/
         }
 
         public static int Multiply(this int number, int multiplier)
@@ -82,14 +102,13 @@
             {
                 // check for set bit and left  
                 // shift number, count times 
-                if (multiplier % 2 == 1)
+                if (multiplier % 2 == 1)       //If odd (will execute always: for odd and for 1 with even multiplier)
                 {
-                    answer += number << count;
-                }
-
-                // increment of place  
-                // value (count) 
-                count++;
+                    answer += number << count; //Multiply by 2 in power of count    <---------------
+                }                              //                                                  |
+                // increment of place                                                              |
+                // value (count)                                                                   |
+                count++;                       //Count how many 2s in multiplier so than later we can 
                 multiplier /= 2;
             }
 
@@ -101,8 +120,11 @@
             /*
                https://www.geeksforgeeks.org/divide-two-integers-without-using-multiplication-division-mod-operator/
                https://en.wikipedia.org/wiki/Long_division
+
+               dividend = quotient * divisor + remainder
+
              */
-            if (divisor == 0 || (dividend == int.MinValue && divisor == -1))
+            if (divisor == 0 || (dividend == int.MinValue && divisor == -1)) //edge case
             {
                 return int.MaxValue;
             }

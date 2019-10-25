@@ -28,5 +28,23 @@
         {
             7.Subtract(3).Should().Be(4);
         }
+
+        [Fact]
+        public void Can_subtract_negative_number()
+        {
+            7.Subtract(-3).Should().Be(10);
+        }
+
+        [Fact]
+        public void Can_subtract_negative_number_from_negative_number()
+        {
+            (-7).Subtract(-3).Should().Be(-4);
+        }
+
+        [Fact]
+        public void Can_subtract_from_negative_number()
+        {
+            (-7).Subtract(3).Should().Be(-10);
+        }
     }
 }
