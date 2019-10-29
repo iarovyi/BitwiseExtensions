@@ -4,11 +4,7 @@
 
     internal static class AlternativeImplementations
     {
-        private const int MinInt = unchecked((int)0b10000000000000000000000000000000);
-        private const int MaxInt =                0b01111111111111111111111111111111;
-        private const long Modulo = (long)(1e9 + 7);//1000000007
-        public static int ToggleBitsIncludingSignBit(this int number) => ~number;
-        public static int ToggleBitsExceptSignBit(this int number) => number ^ MaxInt;
+        #region Math Operations
         public static int Negate(this int number) => ~number + 1; //In two's complement system (like int,long in C#)
 
         public static int Add(this int x, int y)
@@ -154,6 +150,18 @@
 
             return (result > int.MaxValue || result < int.MinValue) ? int.MaxValue : (int)result;
         }
+        #endregion
+
+        #region Contants
+        private const int MinInt = unchecked((int)0b10000000000000000000000000000000);
+        private const int MaxInt =                0b01111111111111111111111111111111;
+        //It is the first 10-digit prime number and fits in int data type https://www.geeksforgeeks.org/modulo-1097-1000000007/
+        private const long Modulo = (long)(1e9 + 7);//1000000007  10^9+7
+        #endregion
+
+        public static long ClampByBigPrimeNumber(this long number) => number % Modulo;
+        public static int ToggleBitsIncludingSignBit(this int number) => ~number;
+        public static int ToggleBitsExceptSignBit(this int number) => number ^ MaxInt;
 
         public static string ToBitString(int number)
         {

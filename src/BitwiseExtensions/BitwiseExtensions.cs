@@ -56,12 +56,12 @@
 
         public static int ToggleRightTrailingZeros(this int number) => number | (number - 1);
 
-        public static int CountSetBits(this long number)
+        public static int CountSetBits(this int number)
         {
             int setBitsCount = 0;
             while (number > 0)
             {
-                setBitsCount += (int)(number & 1);
+                setBitsCount += (number & 1);
                 number >>= 1;
             }
             return setBitsCount;

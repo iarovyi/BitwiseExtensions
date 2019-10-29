@@ -72,5 +72,88 @@ namespace BitwiseExtensions.Specs
             a.Should().Be(88);
             b.Should().Be(77);
         }
+
+        [Fact]
+        public void Can_distinguish_even_and_odd_numbers()
+        {
+            3.IsOdd().Should().BeTrue();
+            3.IsEven().Should().BeFalse();
+            4.IsOdd().Should().BeFalse();
+            4.IsEven().Should().BeTrue();
+        }
+
+        [Fact]
+        public void Can_toggle_right_trailing_zeros()
+        {
+            0b101000.ToggleRightTrailingZeros().Should().Be(0b101111);
+        }
+
+        [Fact]
+        public void Can_count_set_bits()
+        {
+            0b101100.CountSetBits().Should().Be(3);
+        }
+
+        [Fact]
+        public void Can_unset_rightmost_set_bit()
+        {
+            0b101100.UnsetRightmostSetBit().Should().Be(0b101000);
+        }
+
+        [Fact]
+        public void Can_set_rightmost_unset_bit()
+        {
+            0b101011.SetRightmostUnsetBit().Should().Be(0b101111);
+        }
+
+        [Fact]
+        public void Can_unset_all_bits_except_rightmost_set_bit()
+        {
+            0b101010.KeepOnlyRightmostSetBit().Should().Be(0b000010);
+        }
+
+        [Fact]
+        public void Can_toggle_rightmost_unset_bit_and_unset_all_others()
+        {
+            0b101011.KeepOnlyRightmostUnsetBitAs1().Should().Be(0b000100);
+        }
+
+        [Fact]
+        public void Can_set_all_bits_except_rightmost_unset_bit()
+        {
+            0b101011.KeepOnlyRightmostUnsetBitAs0Rest1().Should()
+                .Be(unchecked((int)0b11111111111111111111111111111011));
+        }
+
+        [Fact]
+        public void Can_unset_part_of_group_of_set_bits_starting_at_index()
+        {
+            0b000111000111000111000.UnsetAdjacentLeftOnesStartingAt(4).Should().Be(0b000111000111000001000);
+        }
+
+        [Fact]
+        public void Can_unset_all_bits_except_part_of_group_of_set_bits_starting_at_index()
+        {
+            0b000111000111000111000.GetAdjacentLeftOnesStartingAt(4).Should().Be(0b000000000000000110000);
+        }
+
+        [Fact]
+        public void Can_set_part_of_group_of_unset_bits_starting_at_index()
+        {
+            0b000111000111000111000.SetAdjacentLeftZerosStartingAt(7).Should().Be(0b000111000111110111000);
+        }
+
+        [Fact]
+        public void Set_all_bits_except_part_of_group_of_unset_bits_starting_at_index()
+        {
+            0b000111000111000111000.GetAdjacentLeftZerosStartingAtAndRest1(7).Should()
+                .Be(unchecked((int)0b11111111111111111111111001111111));
+        }
+
+        [Fact]
+        public void Can_convert_number_to_its_bits_representation()
+        {
+            0b01111111111111111111111111111111.ToBitString().Should().Be("01111111111111111111111111111111");
+        }
     }
 }

@@ -4,6 +4,8 @@
 ![release](https://github.com/iarovyi/BitwiseExtensions/workflows/Release/badge.svg)
 
 Educational bitwise extentions for fun only. Not suitable for production
+ - [tricks with bitwise operations](./src/BitwiseExtensions/BitwiseExtensions.cs)
+ - [math operations alternative implementations](./src/BitwiseExtensions/AlternativeImplementations.cs)
 
 ## Prerequisites
 DotNetCore is required for building and visual studio for development

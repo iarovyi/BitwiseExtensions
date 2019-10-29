@@ -46,5 +46,53 @@
         {
             (-7).Subtract(3).Should().Be(-10);
         }
+
+        [Fact]
+        public void Can_negate()
+        {
+            7.Negate().Should().Be(-7);
+        }
+
+        [Fact]
+        public void Can_prevent_overflow_with_addition_by_performing_modulo()
+        {
+            long sum = 0;
+            long expectedSum = 0;
+            foreach (int number in new []{ int.MaxValue, int.MaxValue })
+            {
+                sum = (sum + number).ClampByBigPrimeNumber();
+                expectedSum = expectedSum + number;
+            }
+
+            sum.Should().Be(expectedSum.ClampByBigPrimeNumber());
+        }
+
+        [Fact]
+        public void Can_prevent_overflow_with_substruction_by_performing_modulo()
+        {
+            long result = 0;
+            long expectedResult = 0;
+            foreach (int number in new[] { int.MaxValue, -int.MaxValue })
+            {
+                result = (result - number).ClampByBigPrimeNumber();
+                expectedResult = expectedResult - number;
+            }
+
+            result.Should().Be(expectedResult.ClampByBigPrimeNumber());
+        }
+
+        [Fact]
+        public void Can_prevent_overflow_with_multiplication_by_performing_modulo()
+        {
+            long multiplication = 1;
+            long expectedMultiplication = 1;
+            foreach (int number in new[] { int.MaxValue, int.MaxValue })
+            {
+                multiplication = (multiplication * number).ClampByBigPrimeNumber();
+                expectedMultiplication = expectedMultiplication * number;
+            }
+
+            multiplication.Should().Be(expectedMultiplication.ClampByBigPrimeNumber());
+        }
     }
 }
